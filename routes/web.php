@@ -8,11 +8,21 @@ Route::get('/', function () {
     return view('welcome');
 });
 
- Route::get('/dashboard', function () {
-     return view('dashboard');
- })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/list', function () {
+    return view('list');
+})->middleware(['auth', 'verified'])->name('list');
+
+Route::post('/save', [MovieController::class, 'saveMovies'])->name('save');
+
+
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/movies', [MovieController::class, 'movies'])->middleware(['auth', 'verified'])->name('movies');
+    Route::get('/list', [MovieController::class, 'savedMovies'])->middleware(['auth', 'verified'])->name('list');
+    Route::post('/movies/save', [MovieController::class, 'guardarPelicula'])->middleware(['auth', 'verified'])->name('movies.save');
+    Route::delete('/list', [MovieController::class, 'removeFilm'])->middleware(['auth', 'verified'])->name('list.delete');
+
     // Route::get('/note', [NoteController::class, 'index'])->name('note.index');
     // Route::get('/note/create', [NoteController::class, 'create'])->name('note.create');
     // Route::post('/note', [NoteController::class, 'store'])->name('note.store');
