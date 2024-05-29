@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies</title>
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+</head>
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -8,10 +17,10 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div style="display: flex; flex-wrap: wrap;">
+                <div class="movie-container">
                     @foreach ($movies as $movie)
                         <div
-                            style="display: flex; flex-direction: column; justify-content: space-between; flex: 0 0 calc(22.33% - 20px); margin: 10px;  height: 100%; padding:20px;">
+                        class="movie-card">
                             <div>
                                 <img src="{{ 'https://image.tmdb.org/t/p/w500/' . $movie->poster_path }}"
                                     style="height: 400px; width: 100%; object-fit: cover;" />

@@ -62,6 +62,7 @@ class MovieController extends Controller
     //     }
 
     //     return response()->json(['message' => 'Películas guardadas correctamente']);    }
+
     public function guardarPelicula(Request $request)
     {
         $movieId = $request->input('movie_id');
@@ -73,13 +74,13 @@ class MovieController extends Controller
 
         if ($userMovie) {
             $userMovie->delete();
-            return back()->with('message', 'Película eliminada de la lista');
+            return back()->with('message', 'Película eliminada');
         } else {
             $userMovie = new UserMovie();
             $userMovie->user_id = $userId;
             $userMovie->movie_id = $movieId;
             $userMovie->save();
-            return back()->with('message', 'Película guardada en la lista');
+            return back()->with('message', 'Película guardada');
         }
     }
 
