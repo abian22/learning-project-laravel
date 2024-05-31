@@ -16,7 +16,8 @@ RUN apt-get update && apt-get install -y \
     curl \
     libonig-dev \
     libxml2-dev \
-    libzip-dev
+    libzip-dev \
+    supervisor
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -30,7 +31,11 @@ COPY --chown=www-data:www-data . /var/www
 
 USER root
 
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader -vvv
+RUN touch /tmp/composer.log
+
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader -vvv 2>&1 | tee /tmp/composer.log
+
+RUN cat /tmp/composer.log
 
 USER www-data
 
