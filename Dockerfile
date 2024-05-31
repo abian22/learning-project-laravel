@@ -1,23 +1,38 @@
-FROM elrincondeisma/octane:latest
+FROM php:8.1-fpm
 
-RUN curl -sS https://getcomposer.org/installer​ | php -- \
-     --install-dir=/usr/local/bin --filename=composer
+WORKDIR /var/www
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-COPY --from=spiralscout/roadrunner:2.4.2 /usr/bin/rr /usr/bin/rr
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    locales \
+    zip \
+    jpegoptim optipng pngquant gifsicle \
+    vim \
+    unzip \
+    git \
+    curl \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev
 
-WORKDIR /app
-COPY . .
-RUN rm -rf /app/vendor
-RUN rm -rf /app/composer.lock
-RUN composer install
-RUN composer require laravel/octane spiral/roadrunner
-COPY .env.example .env
-RUN mkdir -p /app/storage/logs
-RUN php artisan cache:clear
-RUN php artisan view:clear
-RUN php artisan config:clear
-RUN php artisan octane:install --server="swoole"
-CMD php artisan octane:start --server="swoole" --host="0.0.0.0"
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-EXPOSE 8000
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+
+COPY --from=composer:2.1 /usr/bin/composer /usr/bin/composer
+
+COPY . /var/www
+
+COPY --chown=www-data:www-data . /var/www
+
+USER root
+
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader -vvv
+
+USER www-data
+
+EXPOSE 9000
+CMD ["php-fpm"]
